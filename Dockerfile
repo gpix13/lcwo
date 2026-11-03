@@ -1,4 +1,3 @@
-#FROM phusion/baseimage:focal-1.0.0
 FROM phusion/baseimage:noble
 LABEL maintainer="Fabian Kurz <fabian@fkurz.net>"
 
