@@ -1,5 +1,5 @@
 FROM phusion/baseimage:focal-1.0.0
-MAINTAINER Fabian Kurz <fabian@fkurz.net>
+LABEL maintainer="Fabian Kurz <fabian@fkurz.net>"
 
 CMD ["/sbin/my_init"]
 
