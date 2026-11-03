@@ -1,9 +1,12 @@
-FROM phusion/baseimage:focal-1.0.0
+#FROM phusion/baseimage:focal-1.0.0
+FROM phusion/baseimage:noble
 LABEL maintainer="Fabian Kurz <fabian@fkurz.net>"
 
 CMD ["/sbin/my_init"]
 
-RUN apt-get update && apt-get install -y apache2 mariadb-server php \
+RUN apt-get update && apt-get install -y ca-certificates curl && \
+    curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | bash -s -- --mariadb-server-version=mariadb-11.4 && \
+    apt-get update && apt-get install -y apache2 mariadb-server php \
     libapache2-mod-php php-mysql php-gd exim4 php-mbstring \
     # stuff needed to compile ebook2cw \
     build-essential libmp3lame-dev git ca-certificates \
@@ -49,7 +52,7 @@ COPY config/.vimrc /root
 RUN mkdir /www/web-log/
 
 # Create a database and tables within the container 
-RUN service mysql start && \
+RUN service mariadb start && \
     mysqladmin -u root create LCWO && \
     echo "CREATE USER 'lcwo'@'localhost' IDENTIFIED BY 'lcwo'; GRANT ALL PRIVILEGES ON LCWO.* TO 'lcwo'@'localhost'; FLUSH PRIVILEGES;" | mysql -uroot && \
     mysql -ulcwo -plcwo LCWO < /www/db/lcwo_schema.sql && \
@@ -58,7 +61,7 @@ RUN service mysql start && \
     mysql -ulcwo -plcwo LCWO < /www/db/lcwo_plaintext.sql && \
     mysql -ulcwo -plcwo LCWO < /www/db/lcwo_words.sql && \
     mysql -ulcwo -plcwo LCWO < /www/db/lcwo_config.sql && \
-    service mysql stop 
+    service mariadb stop
 
 # note that the pre-populated database now resides in /var/lib/mysql
 # later we can run the container and mount a volume to

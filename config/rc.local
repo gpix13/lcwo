@@ -2,10 +2,12 @@
 
 service apache2 start
 
-service mysql start
+chown -R mysql:mysql /var/lib/mysql
+
+service mariadb start
 
 service exim4 start
 
-echo "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));" | mysql -uroot
+echo "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));" | mariadb -uroot
 
 exit 0
